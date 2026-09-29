@@ -1,0 +1,67 @@
+#!/bin/bash
+
+{% if name %}
+#PJM --name="{{ name }}"
+{% endif %}
+
+{% if formatted_duration %}
+#PJM -L "elapse={{ formatted_duration }}"
+{% endif %}
+{% if queue_name %}
+#PJM -L "rscgrp={{ queue_name }}"
+{% endif %}
+{% if process_count %}
+#PJM --mpi "proc={{ process_count }}"
+{% endif %}
+{% if process_per_node %}
+#PJM --mpi "max-proc-per-node={{ process_per_node }}"
+{% endif %}
+{% if billing_account %}
+#PJM -g {{ billing_account }}
+{% endif %}
+{% if custom_key_value %}
+{% for key, value in custom_key_value.items() %}
+#PJM {{ key }} {{ value }}
+{% endfor %}
+{% endif %}
+{% if custom_value %}
+{% for value in custom_value %}
+#PJM {{ value }}
+{% endfor %}
+{% endif %}
+
+{% if cpu_cores_per_process %}
+export OMP_NUM_THREADS={{ cpu_cores_per_process }}
+{% endif %}
+
+export vPSIJUTIL_DIR=${HOME}/vPSIJ_util
+export gRPC_DIR=${vPSIJUTIL_DIR}/grpc
+export PYTHONPATH=${PYTHONPATH}:${gRPC_DIR}
+export GRPC_SERVER={{ grpc_server }}
+export SECURE_CHANNEL={{ secure_channel }}
+
+{% if environments %}
+{% for key, value in environments.items() %}
+export {{ key }}={{ value }}
+{% endfor %}
+{% endif %}
+
+python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 4
+
+{% if pre_execution  %}
+{% for exe in pre_execution %}
+{{ exe }}
+{% endfor %}
+{% endif %}
+
+{{ executable }} {% if arguments %}{{ arguments }}{% endif %}
+
+{% if post_execution  %}
+{% for exe in post_execution %}
+{{ exe }}
+{% endfor %}
+{% endif %}
+
+python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 5
+
+python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 6
