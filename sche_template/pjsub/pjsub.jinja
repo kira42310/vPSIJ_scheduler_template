@@ -46,7 +46,7 @@ export {{ key }}={{ value }}
 {% endfor %}
 {% endif %}
 
-$vPSIJUTIL_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
+python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 4
 
 {% if pre_execution  %}
 {% for exe in pre_execution %}
@@ -62,6 +62,6 @@ $vPSIJUTIL_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
 {% endfor %}
 {% endif %}
 
-$vPSIJUTIL_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5
+python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 5
 
-$vPSIJUTIL_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6
+python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 6
