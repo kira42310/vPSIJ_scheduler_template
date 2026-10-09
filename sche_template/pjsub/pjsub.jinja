@@ -46,7 +46,11 @@ export {{ key }}={{ value }}
 {% endfor %}
 {% endif %}
 
-python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 4
+{% if updater_ssh_user_address %}
+ssh {{ updater_ssh_user_address }} -c "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4"
+{% else %}
+$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
+{% endif %}
 
 {% if pre_execution  %}
 {% for exe in pre_execution %}
@@ -62,6 +66,14 @@ python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 4
 {% endfor %}
 {% endif %}
 
-python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 5
+{% if updater_ssh_user_address %}
+ssh {{ updater_ssh_user_address }} -c "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5"
+{% else %}
+$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5
+{% endif %}
 
-python $gRPC_DIR/job_rpc_client.py $GRPC_SERVER $SECURE_CHANNEL 6
+{% if updater_ssh_user_address %}
+ssh {{ updater_ssh_user_address }} -c "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6"
+{% else %}
+$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6
+{% endif %}
