@@ -34,7 +34,7 @@
 export OMP_NUM_THREADS={{ cpu_cores_per_process }}
 {% endif %}
 
-export vPSIJUTIL_DIR=${HOME}/vPSIJ_util
+export vPSIJUTIL_DIR=vPSIJ_util
 export gRPC_DIR=${vPSIJUTIL_DIR}/grpc
 export PYTHONPATH=${PYTHONPATH}:${gRPC_DIR}
 export GRPC_SERVER={{ grpc_server }}
