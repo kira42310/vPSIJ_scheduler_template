@@ -65,7 +65,7 @@ export {{ key }}={{ value }}
 {% if updater_ssh_user_address %}
 ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4"
 {% else %}
-$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
 {% endif %}
 
 {% if pre_execution  %}
@@ -85,11 +85,11 @@ $gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
 {% if updater_ssh_user_address %}
 ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5"
 {% else %}
-$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5
 {% endif %}
 
 {% if updater_ssh_user_address %}
 ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6"
 {% else %}
-$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6
 {% endif %}
