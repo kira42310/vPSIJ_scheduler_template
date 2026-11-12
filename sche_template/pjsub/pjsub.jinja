@@ -66,6 +66,12 @@ ${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
 {% endfor %}
 {% endif %}
 
+if [ $? -eq 0 ]; then
+  ec=6
+else
+  ec=7
+fi
+
 {% if updater_ssh_user_address %}
 ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5"
 {% else %}
@@ -73,7 +79,7 @@ ${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5
 {% endif %}
 
 {% if updater_ssh_user_address %}
-ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6"
+ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL $ec"
 {% else %}
-${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL $ec
 {% endif %}
