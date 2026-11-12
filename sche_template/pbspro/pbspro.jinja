@@ -1,0 +1,124 @@
+#!/bin/bash
+
+{% if name %}
+#PBS -N="{{ name }}"
+{% endif}
+
+{% if node_count %}
+#PBS -l select={{ node_count }}{% if cores_per_node %}:ncpus={{ corees_per_node }}{% endif %}{% if process_per_node %}:mpirocs={{ process_per_node }}{% endif %}{% if memory %}:mem={{ memory }}{% endif %}
+{% endif %}
+
+{% if exclusive_node_use %}
+#PBS -l place=scatter:exclhost
+#SBATCH --exclusive
+{% else %}
+#PBS -l place=scatter:shared
+{% endif %}
+
+{% if formatted_duration %}
+#PBS -l walltime={{ formatted_duration}}
+{% endif %}
+
+{% if billing_account %}
+#PBS -A {{ billing_account }}
+{% endif %}
+{% if queue_name %}
+#PBS -q {{ queue_name }}
+{% endif %}
+{% if reservation_id %}
+#PBS -q {{ reservation_id }}
+{% endif %}
+
+{% if custom_key_value %}
+{% for key, value in custom_key_value.items() %}
+#PBS {{ key }} {{ value }}
+{% endfor %}
+{% endif %}
+{% if custom_value %}
+{% for value in custom_value %}
+#PBS {{ value }}
+{% endfor %}
+{% endif %}
+
+
+#PBS -e /dev/null
+#PBS -o /dev/null
+
+{% if environments %}
+{% for key, value in environments.items() %}
+export {{ key }}={{ value }}
+{% endfor %}
+{% endif %}
+
+
+#!/bin/bash
+
+{% if name %}
+#SBATCH --job-name="{{ name }}"
+{% endif %}
+{% if directory %}
+#SBATCH --chdir="{{ directory }}"
+{% endif %}
+
+{% if node_count %}
+#SBATCH --nodes={{ node_count }}
+{% endif %}
+{% if process_count %}
+#SBATCH --ntasks={{ process_count }}
+{% endif %}
+{% if process_per_node %}
+#SBATCH --ntasks-per-node={{ process_per_node }}
+{% endif %}
+{% if cpu_cores_per_process %}
+#SBATCH --cpus-per-task={{ cpu_cores_per_process }}
+{% endif %}
+{% if memory %}
+#SBATCH --mem={{ memory }}
+{% endif %}
+
+export vPSIJUTIL_DIR=vPSIJ_util
+export gRPC_DIR=$vPSIJUTIL_DIR/grpc
+export PYTHONPATH=${PYTHONPATH}:${gRPC_DIR}
+{% if remote_dir_base %}
+export DATA_DIR={{ remote_dir_base }}/data/
+{% endif %}
+export GRPC_SERVER={{ grpc_server }}
+export SECURE_CHANNEL={{ secure_channel }}
+
+{% if updater_ssh_user_address %}
+ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4"
+{% else %}
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
+{% endif %}
+
+{% if pre_execution  %}
+{% for exe in pre_execution %}
+{{ exe }}
+{% endfor %}
+{% endif %}
+
+{{ executable }} {% if arguments %} {{ arguments }} {% endif %}
+
+{% if post_execution  %}
+{% for exe in post_execution %}
+{{ exe }}
+{% endfor %}
+{% endif %}
+
+if [ $? -eq 0 ]; then
+  ec=6
+else
+  ec=7
+fi
+
+{% if updater_ssh_user_address %}
+ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5"
+{% else %}
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5
+{% endif %}
+
+{% if updater_ssh_user_address %}
+ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL $ec"
+{% else %}
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL $ec
+{% endif %}
