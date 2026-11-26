@@ -60,17 +60,20 @@ ${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 4
 
 {{ executable }} {% if arguments %}{{ arguments }}{% endif %}
 
+if [ $? -ne 0 ]; then
+  {% if updater_ssh_user_address %}
+  ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 7"
+  {% else %}
+  ${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 7
+  {% endif %}
+  exit 0
+fi
+
 {% if post_execution  %}
 {% for exe in post_execution %}
 {{ exe }}
 {% endfor %}
 {% endif %}
-
-if [ $? -eq 0 ]; then
-  ec=6
-else
-  ec=7
-fi
 
 {% if updater_ssh_user_address %}
 ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5"
@@ -79,7 +82,7 @@ ${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 5
 {% endif %}
 
 {% if updater_ssh_user_address %}
-ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL $ec"
+ssh {{ updater_ssh_user_address }} "$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6"
 {% else %}
-${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL $ec
+${HOME}/$gRPC_DIR/vpsij-updater $GRPC_SERVER $SECURE_CHANNEL 6
 {% endif %}
